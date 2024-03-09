@@ -14,7 +14,7 @@ async def auth_middleware(app, handler):
         user_id = request.session.get('user_id')
         if user_id is not None:
             try:
-                request.user = await User.get(_id=user_id)
+                request.user = await User.get(id=user_id)
             except NoResultFound:
                 pass
         # ==========================================

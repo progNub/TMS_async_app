@@ -3,6 +3,7 @@ from aiohttp_jinja2 import template
 from sqlalchemy.exc import NoResultFound
 
 from .models import Post, User
+from .services.mixins import ValidateRegisterMixin
 
 
 class HomeView(web.View):
@@ -55,3 +56,26 @@ class LoginView(web.View):
         self.request.session["user_id"] = user.id
 
         raise web.HTTPFound("/")  # Перенаправление на главную!
+
+
+class RegisterView(web.View, ValidateRegisterMixin):
+
+    @template('account/register.html')
+    async def get(self):
+        return {}
+
+    @template('account/register.html')
+    async def post(self):
+        is_valid = await self.is_valid()
+        if is_valid:
+            user = await User.create_user(**self.clean_data)
+            self.request.session["user_id"] = user.id
+            raise web.HTTPFound("/")
+
+        else:
+            result_dict: dict = {'errors': []}
+            for errors in self.invalid_data.values():
+                for error in errors:
+                    result_dict['errors'].append(error)
+                    result_dict.update(self.data)
+        return result_dict
