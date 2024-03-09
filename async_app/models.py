@@ -5,6 +5,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, sele
 
 from .database.base import Base, Manager
 from .database.connector import db_conn
+from .services.encryption import make_password, check_password
 
 
 class User(Base, Manager):
@@ -22,17 +23,20 @@ class User(Base, Manager):
     async def create_user(cls, **kwargs):
         password = kwargs.get("password")
         # ----------
-        kwargs["password"] = password  # TODO: добавить шифрование пароля
+        kwargs["password"] = make_password(password)
         # ----------
         return await super().create(**kwargs)
 
     @classmethod
     async def get_valid_user(self, username: str, password: str) -> "User":
-        # TODO: добавить проверку с шифрованным паролем.
-        query = select(User).where(User.username == username, User.password == password)
+        query = select(User).where(User.username == username)
+
         async with db_conn.session as session:
             user = await session.execute(query)
-            return user.scalar_one()
+            user: User = user.scalar_one()
+            if user:
+                if check_password(password, user.password):
+                    return user
 
 
 class Post(Base, Manager):
