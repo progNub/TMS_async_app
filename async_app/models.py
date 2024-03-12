@@ -2,7 +2,7 @@ from datetime import datetime
 from xmlrpc.client import DateTime
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, select
-
+from sqlalchemy.orm import relationship
 from .database.base import Base, Manager
 from .database.connector import db_conn
 from .services.encryption import make_password, check_password
@@ -15,6 +15,7 @@ class User(Base, Manager):
     username = Column(String(100), nullable=False, unique=True)
     password = Column(String(300), nullable=False)
     email = Column(String(100), nullable=True)
+    posts = relationship("Post", back_populates="user")
 
     def __str__(self):
         return f"User: {self.id} ({self.username})"
@@ -47,6 +48,8 @@ class Post(Base, Manager):
     content = Column(Text())
     created = Column(DateTime(), default=datetime.now)
     user_id = Column(ForeignKey("users.id", ondelete="cascade"))
+
+    user = relationship("User", back_populates='posts')
 
     def __str__(self):
         return self.title

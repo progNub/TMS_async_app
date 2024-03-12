@@ -3,22 +3,31 @@
 
 {% block content %}
 <div class="container w-100 h-100">
-    <h1>
-    Теперь это aiohttp
-    </h1>
+	<h1>
+		Теперь это aiohttp
+	</h1>
 
-    <h4>{{ user }}, добро пожаловать!</h4>
+	<h4>{{ user }}, добро пожаловать!</h4>
 
-    <div class="d-flex">
-        {% for post in posts %}
-            <div class="card shadow p-4">
+	<div class="d-flex">
+		{% for post in posts %}
+		<div class="card shadow p-3 m-3">
+			<a href="/notes/{{post.id}}">Show note</a>
 
-                <h5>{{ post.title }}</h5>
-                <p>{{ post.content }}</p>
+			{%if request.user.username == post.user.username %}
+			<a href="">Изменить</a>
+			{% endif %}
 
-            </div>
-        {% endfor %}
-    </div>
+			<h5>{{ post.title }}</h5>
+			<br>
+			<p>{{ post.content }}</p>
+			<p>{{post.user.username}}</p>
+
+
+		</div>
+		{% endfor %}
+
+	</div>
 
 
 </div>

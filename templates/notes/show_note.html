@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container h-100">
+	<div class="row h-100 justify-content-center align-items-center">
+		<div class="card shadow p-3 m-3 text-center">
+
+			<br>
+			<h5>{{ post.title }}</h5>
+			<p>{{ post.content }}</p>
+			<br>
+			<p>{{ post.user.username }}</p>
+			{% if request.user.username == post.user.username %}
+			<a href="">Изменить</a>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
