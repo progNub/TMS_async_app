@@ -26,8 +26,14 @@ class Manager:
                 setattr(self, key, value)
         async with db_conn.session as session:
             await session.merge(self)  # изменяет уже имеющийся обьект
-            await session.commit()  # Подтверждаем транзакцию
+            await session.commit()
             return self
+
+    async def delete(self):
+        async with db_conn.session as session:
+            await session.delete(self)
+            await session.commit()
+            return True
 
     @classmethod
     async def get(cls, **kwargs):

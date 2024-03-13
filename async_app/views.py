@@ -138,3 +138,18 @@ class NoteChangeView(BaseView):
             return web.HTTPFound(f"/notes/{post_id}")
         else:
             return web.HTTPNotFound()
+
+
+class NoteDeleteView(BaseView):
+    async def get(self):
+        if not self.request.user:
+            raise web.HTTPForbidden()
+        post_id = self.request.match_info.get('post_id')
+        post: Post = await Post.get(id=post_id)
+        if post.user_id != self.request.user.id:
+            raise web.HTTPForbidden()
+        if post:
+            await post.delete()
+            return web.HTTPFound("/")
+        else:
+            return web.HTTPNotFound()

@@ -19,6 +19,7 @@
 			<p>Autor: {{post.user.username}}</p>
 			{% if request.user.username == post.user.username %}
 			<a href="/notes/change/{{post.id}}">Изменить</a>
+			<a href="/notes/delete/{{post.id}}">Удалить</a>
 			{% endif %}
 		</div>
 		{% endfor %}

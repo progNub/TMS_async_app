@@ -11,5 +11,6 @@ routes = [
     web.route("*", "/notes/create", handler=views.NoteCreateView),
     web.route("*", "/notes/{post_id}", handler=views.NoteShowView),
     web.route("*", "/notes/change/{post_id}", handler=views.NoteChangeView),
+    web.route("*", "/notes/delete/{post_id}", handler=views.NoteDeleteView),
 
 ]
