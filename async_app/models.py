@@ -30,14 +30,11 @@ class User(Base, Manager):
 
     @classmethod
     async def get_valid_user(self, username: str, password: str) -> "User":
-        query = select(User).where(User.username == username)
+        user = await User.get(username=username)
+        if check_password(password, user.password):
+            return user
 
-        async with db_conn.session as session:
-            user = await session.execute(query)
-            user: User = user.scalar_one()
-            if user:
-                if check_password(password, user.password):
-                    return user
+
 
 
 class Post(Base, Manager):

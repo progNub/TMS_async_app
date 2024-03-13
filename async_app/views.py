@@ -73,9 +73,8 @@ class LoginView(BaseView):
         username = user_data.get('username')
         password = user_data.get('password')
 
-        try:
-            user = await User.get_valid_user(username, password)
-        except NoResultFound:
+        user = await User.get_valid_user(username, password)
+        if not user:
             return self.prepare_context({"error": "Invalid username or password"})
 
         # Создать сессию пользователя!
@@ -85,7 +84,6 @@ class LoginView(BaseView):
 
 
 async def logout(request):
-    print(request)
     session = await get_session(request)
     session.pop('user_id', None)
     raise web.HTTPFound("/")
@@ -112,3 +110,31 @@ class RegisterView(BaseView, ValidateRegisterMixin):
                     result_dict['errors'].append(error)
                     result_dict.update(self.data)
         return self.prepare_context(result_dict)
+
+
+class NoteChangeView(BaseView):
+
+    @template("notes/change_note_form.html")
+    async def get(self):
+        if not self.request.user:
+            raise web.HTTPForbidden()
+        post: Post = await Post.get(id=self.request.match_info.get('post_id'))
+        if post.user_id != self.request.user.id:
+            raise web.HTTPForbidden()
+
+        context = {'post': post}
+        return self.prepare_context(context)
+
+    @template("notes/change_note_form.html")
+    async def post(self):
+        user_data = await self.request.post()
+        post_id = self.request.match_info.get('post_id')
+        title = user_data.get('title')
+        content = user_data.get('content')
+
+        post: Post = await Post.get(id=post_id)
+        if post:
+            await post.update(title=title, content=content)
+            return web.HTTPFound(f"/notes/{post_id}")
+        else:
+            return web.HTTPNotFound()

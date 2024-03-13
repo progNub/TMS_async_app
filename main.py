@@ -10,7 +10,7 @@ from async_app.middleware.auth import auth_middleware
 
 async def init_db(app):
     print("Initializing database")
-    db_conn.initialize("sqlite+aiosqlite:///db.sqlite3", False)
+    db_conn.initialize("sqlite+aiosqlite:///db.sqlite3", True)
 
 
 if __name__ == '__main__':

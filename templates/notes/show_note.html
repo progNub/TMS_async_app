@@ -11,7 +11,7 @@
 			<br>
 			<p>{{ post.user.username }}</p>
 			{% if request.user.username == post.user.username %}
-			<a href="">Изменить</a>
+			<a href="/notes/change/{{post.id}}">Изменить</a>
 			{% endif %}
 		</div>
 	</div>
