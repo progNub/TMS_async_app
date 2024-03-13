@@ -16,6 +16,8 @@ class User(Base, Manager):
     password = Column(String(300), nullable=False)
     email = Column(String(100), nullable=True)
     posts = relationship("Post", back_populates="user")
+    first_name = Column(String(100), nullable=True)
+    last_name = Column(String(100), nullable=True)
 
     def __str__(self):
         return f"User: {self.id} ({self.username})"
