@@ -1,5 +1,5 @@
 from datetime import datetime
-from xmlrpc.client import DateTime
+
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, select
 from sqlalchemy.orm import relationship
@@ -33,8 +33,9 @@ class User(Base, Manager):
     @classmethod
     async def get_valid_user(self, username: str, password: str) -> "User":
         user = await User.get(username=username)
-        if check_password(password, user.password):
-            return user
+        if user:
+            if check_password(password, user.password):
+                return user
 
 
 
